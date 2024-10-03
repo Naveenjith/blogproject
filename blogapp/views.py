@@ -11,7 +11,7 @@ from rest_framework import status
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
-    permission_classes = [AllowAny]  # Allow anyone to access this view
+    permission_classes = [AllowAny]  
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -34,7 +34,6 @@ class ProfileUpdateView(APIView):
     def put(self, request):
         try:
             profile = Profile.objects.get(user=request.user)
-            # Update the user's username and email if provided in the request
             user = request.user
             user_data = request.data.get('user', {})
             user.username = user_data.get('username', user.username)
@@ -56,11 +55,9 @@ class BlogPostListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        # Return blog posts for the authenticated user only
         return BlogPost.objects.filter(author=self.request.user)
 
     def perform_create(self, serializer):
-        # Automatically set the author to the logged-in user
         serializer.save(author=self.request.user)
 
 
@@ -69,5 +66,4 @@ class BlogPostDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        # Return blog posts for the authenticated user only
         return BlogPost.objects.filter(author=self.request.user)
